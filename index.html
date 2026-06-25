@@ -16,12 +16,29 @@
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; }
-body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; background:var(--bg); color:var(--text); line-height:1.7; display:flex; min-height:100vh; }
+body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
 
+/* ===== TOP BAR (mobile only) ===== */
+.topbar {
+  display:none; position:fixed; top:0; left:0; right:0; height:52px;
+  background:var(--sidebar-bg); color:#e8dcc8; z-index:200;
+  align-items:center; justify-content:space-between; padding:0 16px;
+}
+.topbar .tb-title { font-size:15px; font-weight:700; line-height:1.2; }
+.topbar .tb-sub { font-size:10px; color:#8a7d65; }
+.hamburger {
+  display:none; background:none; border:none; color:#c4b99a; font-size:26px;
+  cursor:pointer; padding:4px 8px; line-height:1; flex-shrink:0;
+}
+
+/* ===== OVERLAY ===== */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:150; }
+
+/* ===== SIDEBAR (desktop) ===== */
 .sidebar {
   width:280px; min-width:280px; background:var(--sidebar-bg); color:var(--sidebar-text);
-  position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:100;
-  padding:24px 20px; font-size:14px;
+  position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:160;
+  padding:24px 20px; font-size:14px; transition:transform 0.25s ease;
 }
 .sidebar-header { margin-bottom:28px; }
 .sidebar-header h1 { font-size:18px; color:#e8dcc8; line-height:1.4; font-weight:700; }
@@ -35,7 +52,12 @@ body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaH
 .sidebar-nav a.active { background:rgba(212,167,69,0.12); color:var(--sidebar-active); border-left-color:var(--sidebar-active); }
 .sidebar-nav .card-num { font-size:10px; opacity:0.6; margin-right:2px; }
 .sidebar-nav .nav-dl { margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); }
+.sidebar-close {
+  display:none; position:absolute; top:8px; right:12px; background:none; border:none;
+  color:#a89870; font-size:24px; cursor:pointer; line-height:1; padding:4px;
+}
 
+/* ===== MAIN CONTENT ===== */
 .main { margin-left:280px; flex:1; padding:40px 48px; max-width:1200px; }
 .section { margin-bottom:56px; }
 .section-header { margin-bottom:24px; padding-bottom:16px; border-bottom:2px solid var(--border); }
@@ -58,6 +80,7 @@ body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaH
 
 .boundary-note { background:#fff8e8; border:1px solid #e8d090; border-radius:8px; padding:16px 20px; margin:16px 0; font-size:13px; color:#7a6418; }
 .boundary-note strong { color:#5c4a10; }
+.boundary-note code { background:#fdf3d0; padding:1px 6px; border-radius:3px; font-size:12px; }
 
 .check-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
 .check-table th { background:#f8f5ec; padding:10px 14px; text-align:left; font-weight:700; border:1px solid var(--border); }
@@ -84,18 +107,6 @@ body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaH
 .sidebar::-webkit-scrollbar { width:4px; } .sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:4px; }
 ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
 
-@media (max-width:768px) {
-  .sidebar { width:100%; height:auto; position:relative; padding:16px; }
-  .sidebar-nav { display:flex; flex-wrap:wrap; gap:8px; }
-  .sidebar-nav .lesson-group { margin-bottom:4px; width:100%; }
-  .sidebar-nav a { display:inline-block; font-size:12px; padding:4px 10px; }
-  .main { margin-left:0; padding:20px; }
-  .card { padding:20px; }
-  .check-table { font-size:12px; }
-  .download-grid { grid-template-columns:1fr; }
-  .img-preview-grid { grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); }
-}
-
 .copy-btn { font-size:11px; background:#e8e0d0; border:1px solid var(--border); padding:4px 12px; border-radius:4px; cursor:pointer; float:right; margin-top:8px; color:var(--text-secondary); }
 .copy-btn:hover { background:#d8cfb8; }
 .collapsible { cursor:pointer; user-select:none; }
@@ -103,11 +114,82 @@ body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaH
 .collapsible.open::after { content:' ▾'; }
 .collapse-content { display:none; }
 .collapse-content.open { display:block; }
+
+/* ================================================================ */
+/* MOBILE (≤768px) */
+/* ================================================================ */
+@media (max-width:768px) {
+  .topbar { display:flex; }
+  .hamburger { display:block; }
+  .sidebar-close { display:block; }
+
+  /* sidebar hidden off-screen by default */
+  .sidebar {
+    position:fixed; top:0; left:0; height:100vh; width:280px; min-width:auto;
+    transform:translateX(-100%); z-index:160; padding-top:48px;
+  }
+  .sidebar.open { transform:translateX(0); }
+  .overlay.show { display:block; }
+
+  .main { margin-left:0; padding:64px 16px 32px; max-width:100%; }
+
+  .section { margin-bottom:36px; }
+  .section-header { margin-bottom:18px; padding-bottom:12px; }
+  .section-header h2 { font-size:20px; }
+  .section-header .lesson-badge { font-size:11px; padding:2px 10px; }
+
+  .card { padding:18px 16px; border-radius:10px; margin-bottom:16px; }
+  .card h3 { font-size:15px; }
+  .card .role-label { font-size:10px; padding:2px 8px; }
+  .card .card-desc { font-size:13px; margin-bottom:14px; }
+
+  .prompt-content { padding:14px 16px; font-size:12px; line-height:1.7; }
+  .boundary-note { padding:12px 14px; font-size:12px; margin:12px 0; }
+
+  .check-table { font-size:11px; }
+  .check-table th, .check-table td { padding:6px 8px; }
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
+  .download-grid { grid-template-columns:1fr; gap:10px; }
+  .download-card { padding:14px 16px; }
+  .download-card .info .name { font-size:13px; }
+
+  .img-preview-grid { grid-template-columns:repeat(2, 1fr); gap:8px; }
+  .img-preview-card img { height:140px; }
+  .img-preview-card .img-name { font-size:10px; padding:6px; }
+
+  .collapsible { font-size:13px; }
+}
+
+/* ================================================================ */
+/* TABLET (769px–1024px) */
+/* ================================================================ */
+@media (min-width:769px) and (max-width:1024px) {
+  .sidebar { width:240px; min-width:240px; font-size:13px; }
+  .sidebar-header h1 { font-size:16px; }
+  .sidebar-nav a { font-size:12px; padding:5px 10px; }
+  .main { margin-left:240px; padding:30px 32px; }
+  .card { padding:22px 26px; }
+  .section-header h2 { font-size:22px; }
+}
 </style>
 </head>
 <body>
 
-<nav class="sidebar">
+<!-- ===== MOBILE TOP BAR ===== -->
+<div class="topbar">
+  <div>
+    <div class="tb-title">AI漫剧提示词笔记</div>
+    <div class="tb-sub">《可信度 97%》· 15张卡片</div>
+  </div>
+  <button class="hamburger" onclick="openSidebar()" aria-label="菜单">&#9776;</button>
+</div>
+
+<!-- ===== OVERLAY ===== -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="关闭">&times;</button>
   <div class="sidebar-header">
     <h1>AI漫剧提示词笔记</h1>
     <div class="subtitle">《可信度 97%》· AIGC影视制作流程</div>
@@ -1317,31 +1399,38 @@ body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaH
 </main>
 
 <script>
-// Highlight active nav link based on scroll
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.sidebar-nav a[href^="#"]');
+// ===== Sidebar toggle (mobile) =====
+var sidebar = document.getElementById('sidebar');
+var overlay = document.getElementById('overlay');
+function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('show'); }
+function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+
+// ===== Highlight active nav link based on scroll =====
+var sections = document.querySelectorAll('section[id]');
+var navLinks = document.querySelectorAll('.sidebar-nav a[href^="#"]');
 function updateActiveLink() {
-  let current = '';
-  sections.forEach(s => {
-    if (s.getBoundingClientRect().top < 200) current = s.getAttribute('id');
+  var current = '';
+  sections.forEach(function(s) {
+    if (s.getBoundingClientRect().top < 120) current = s.getAttribute('id');
   });
-  navLinks.forEach(a => {
+  navLinks.forEach(function(a) {
     a.classList.toggle('active', a.getAttribute('href') === '#' + current);
   });
 }
 window.addEventListener('scroll', updateActiveLink, {passive:true});
 updateActiveLink();
 
-// Smooth scroll
-navLinks.forEach(a => {
-  a.addEventListener('click', e => {
+// ===== Smooth scroll + close sidebar on mobile =====
+navLinks.forEach(function(a) {
+  a.addEventListener('click', function(e) {
     e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
+    closeSidebar();
+    var target = document.querySelector(a.getAttribute('href'));
     if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
   });
 });
 
-// Collapsible toggle
+// ===== Collapsible toggle =====
 function toggleCollapse(el) {
   el.classList.toggle('open');
   el.nextElementSibling.classList.toggle('open');

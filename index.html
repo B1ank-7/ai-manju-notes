@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI漫剧提示词笔记总结 - 可信度97%</title>
+<style>
+:root {
+  --bg: #f5f3f0; --card-bg: #ffffff; --text: #2c2416; --text-secondary: #6b5e4a;
+  --border: #e0d8c8; --accent: #8b6914; --accent-light: #f0e6d0;
+  --sidebar-bg: #1e1b15; --sidebar-text: #c4b99a; --sidebar-active: #d4a745;
+  --code-bg: #faf8f4; --tag-bg: #faf6ee; --tag-text: #7a6438;
+  --lesson-1: #7a5c1e; --lesson-2: #5c7a3c; --lesson-3: #3c5c7a;
+  --lesson-4: #7a3c5c; --lesson-5: #5c3c7a; --lesson-6: #3c7a6c;
+  --dl-color: #2a6496;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family: -apple-system, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; background:var(--bg); color:var(--text); line-height:1.7; display:flex; min-height:100vh; }
+
+.sidebar {
+  width:280px; min-width:280px; background:var(--sidebar-bg); color:var(--sidebar-text);
+  position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:100;
+  padding:24px 20px; font-size:14px;
+}
+.sidebar-header { margin-bottom:28px; }
+.sidebar-header h1 { font-size:18px; color:#e8dcc8; line-height:1.4; font-weight:700; }
+.sidebar-header .subtitle { font-size:12px; color:#8a7d65; margin-top:4px; }
+.sidebar-nav { list-style:none; }
+.sidebar-nav li { margin-bottom:2px; }
+.sidebar-nav .lesson-group { margin-bottom:16px; margin-top:4px; }
+.sidebar-nav .lesson-title { color:#a89870; font-size:12px; font-weight:700; letter-spacing:0.5px; padding:8px 0 4px; display:block; cursor:default; }
+.sidebar-nav a { color:var(--sidebar-text); text-decoration:none; display:block; padding:6px 12px; border-radius:6px; font-size:13px; transition:all 0.15s; border-left:2px solid transparent; }
+.sidebar-nav a:hover { background:rgba(255,255,255,0.06); color:#e0d6bc; }
+.sidebar-nav a.active { background:rgba(212,167,69,0.12); color:var(--sidebar-active); border-left-color:var(--sidebar-active); }
+.sidebar-nav .card-num { font-size:10px; opacity:0.6; margin-right:2px; }
+.sidebar-nav .nav-dl { margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); }
+
+.main { margin-left:280px; flex:1; padding:40px 48px; max-width:1200px; }
+.section { margin-bottom:56px; }
+.section-header { margin-bottom:24px; padding-bottom:16px; border-bottom:2px solid var(--border); }
+.section-header h2 { font-size:26px; color:var(--text); font-weight:800; }
+.section-header .lesson-badge { display:inline-block; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:700; color:#fff; margin-bottom:8px; }
+.lesson-badge.l1 { background:var(--lesson-1); } .lesson-badge.l2 { background:var(--lesson-2); }
+.lesson-badge.l3 { background:var(--lesson-3); } .lesson-badge.l4 { background:var(--lesson-4); }
+.lesson-badge.l5 { background:var(--lesson-5); } .lesson-badge.l6 { background:var(--lesson-6); }
+.lesson-badge.dl { background:var(--dl-color); }
+
+.card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:28px 32px; margin-bottom:20px; transition:box-shadow 0.2s; }
+.card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+.card h3 { font-size:18px; margin-bottom:6px; color:var(--text); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.card .role-label { font-size:12px; background:var(--accent-light); color:var(--accent); padding:2px 10px; border-radius:12px; font-weight:600; white-space:nowrap; }
+.card .card-desc { font-size:14px; color:var(--text-secondary); margin-bottom:20px; }
+
+.prompt-block { margin-bottom:22px; }
+.prompt-block h4 { font-size:14px; color:var(--accent); margin-bottom:8px; font-weight:700; }
+.prompt-content { background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:20px 24px; font-size:14px; line-height:1.9; white-space:pre-wrap; font-family: inherit; overflow-x:auto; color:#3d3424; }
+
+.boundary-note { background:#fff8e8; border:1px solid #e8d090; border-radius:8px; padding:16px 20px; margin:16px 0; font-size:13px; color:#7a6418; }
+.boundary-note strong { color:#5c4a10; }
+
+.check-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
+.check-table th { background:#f8f5ec; padding:10px 14px; text-align:left; font-weight:700; border:1px solid var(--border); }
+.check-table td { padding:10px 14px; border:1px solid var(--border); vertical-align:top; }
+
+.download-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; margin-top:16px; }
+.download-card { background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px 20px; display:flex; align-items:center; gap:14px; transition:all 0.2s; text-decoration:none; color:var(--text); }
+.download-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.08); border-color:var(--accent); }
+.download-card .icon { font-size:28px; flex-shrink:0; }
+.download-card .info { flex:1; min-width:0; }
+.download-card .info .name { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.download-card .info .size { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+.download-card .dl-btn { font-size:12px; background:var(--accent); color:#fff; padding:6px 14px; border-radius:6px; white-space:nowrap; font-weight:600; }
+.download-card.ppt { border-left:3px solid #d44a3c; }
+.download-card.img { border-left:3px solid #3c8a6c; }
+
+.img-preview-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px; margin-top:16px; }
+.img-preview-card { background:var(--card-bg); border:1px solid var(--border); border-radius:10px; overflow:hidden; transition:all 0.2s; }
+.img-preview-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+.img-preview-card img { width:100%; height:180px; object-fit:cover; display:block; }
+.img-preview-card .img-name { font-size:11px; padding:8px 10px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; }
+.img-preview-card a { text-decoration:none; color:inherit; display:block; }
+
+.sidebar::-webkit-scrollbar { width:4px; } .sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:4px; }
+::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
+
+@media (max-width:768px) {
+  .sidebar { width:100%; height:auto; position:relative; padding:16px; }
+  .sidebar-nav { display:flex; flex-wrap:wrap; gap:8px; }
+  .sidebar-nav .lesson-group { margin-bottom:4px; width:100%; }
+  .sidebar-nav a { display:inline-block; font-size:12px; padding:4px 10px; }
+  .main { margin-left:0; padding:20px; }
+  .card { padding:20px; }
+  .check-table { font-size:12px; }
+  .download-grid { grid-template-columns:1fr; }
+  .img-preview-grid { grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); }
+}
+
+.copy-btn { font-size:11px; background:#e8e0d0; border:1px solid var(--border); padding:4px 12px; border-radius:4px; cursor:pointer; float:right; margin-top:8px; color:var(--text-secondary); }
+.copy-btn:hover { background:#d8cfb8; }
+.collapsible { cursor:pointer; user-select:none; }
+.collapsible::after { content:' ▸'; font-size:12px; }
+.collapsible.open::after { content:' ▾'; }
+.collapse-content { display:none; }
+.collapse-content.open { display:block; }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h1>AI漫剧提示词笔记</h1>
+    <div class="subtitle">《可信度 97%》· AIGC影视制作流程</div>
+  </div>
+  <ul class="sidebar-nav">
+    <li><a href="#overview">📋 概述总览</a></li>
+    <li class="lesson-group"><span class="lesson-title">第一课 · 剧本导演初读表</span></li>
+    <li><a href="#l1c1"><span class="card-num">卡1</span> 剧本分析员工</a></li>
+    <li><a href="#l1c2"><span class="card-num">卡2</span> 导演助理（初读检查）</a></li>
+    <li class="lesson-group"><span class="lesson-title">第二课 · 影片风格判断</span></li>
+    <li><a href="#l2c1"><span class="card-num">卡1</span> 影片风格判断助理</a></li>
+    <li><a href="#l2c2"><span class="card-num">卡2</span> 风格跑偏检查员工</a></li>
+    <li><a href="#l2c3"><span class="card-num">卡3</span> ≤15秒片段统一约束整理</a></li>
+    <li class="lesson-group"><span class="lesson-title">第三课 · 悬疑节奏</span></li>
+    <li><a href="#l3c1"><span class="card-num">卡1</span> 悬疑节奏分析员工</a></li>
+    <li><a href="#l3c2"><span class="card-num">卡2</span> 悬疑节奏输出检查</a></li>
+    <li><a href="#l3c3"><span class="card-num">卡3</span> ≤15秒片段功能预判</a></li>
+    <li class="lesson-group"><span class="lesson-title">第四课 · 角色定妆提示词</span></li>
+    <li><a href="#l4c1"><span class="card-num">卡1</span> 角色全身正视图定妆</a></li>
+    <li><a href="#l4c2"><span class="card-num">卡2</span> 角色面部特写定妆</a></li>
+    <li><a href="#l4c3"><span class="card-num">卡3</span> 角色三视图定妆</a></li>
+    <li class="lesson-group"><span class="lesson-title">第五课 · 场景与角色基准</span></li>
+    <li><a href="#l5c1"><span class="card-num">卡1</span> 场景基准图提示词</a></li>
+    <li><a href="#l5c2"><span class="card-num">卡2</span> 角色基准提示词</a></li>
+    <li class="lesson-group"><span class="lesson-title">分镜 · 专业分镜表</span></li>
+    <li><a href="#sb1"><span class="card-num">卡1</span> AI分镜表生成</a></li>
+    <li class="lesson-group"><span class="lesson-title">第六课 · 视频故事板</span></li>
+    <li><a href="#l6c1"><span class="card-num">卡1</span> AI视频故事板</a></li>
+    <li class="nav-dl"><a href="#downloads" style="color:#8cb4d4;">📥 资料下载（PPT+图片+AIGC）</a></li>
+  </ul>
+</nav>
+
+<main class="main">
+
+<!-- ===== OVERVIEW ===== -->
+<section id="overview" class="section">
+  <div class="section-header"><h2>概述总览</h2></div>
+  <div class="card">
+    <p style="font-size:15px; line-height:2;">
+      本网站是 <strong>AI漫剧（AIGC影视）提示词学习笔记</strong>，以短片《可信度 97%》为案例，<br>
+      按照 <strong>AIGC 导演前期制作流程</strong> 组织为 <strong>六课 + 分镜</strong>，共 <strong>15 张提示词卡片</strong>。
+    </p>
+    <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;">
+      <span class="role-label">第一课：剧本初读</span>
+      <span class="role-label">第二课：风格判断</span>
+      <span class="role-label">第三课：悬疑节奏</span>
+      <span class="role-label">第四课：角色定妆</span>
+      <span class="role-label">第五课：场景与角色基准</span>
+      <span class="role-label">分镜：专业分镜表</span>
+      <span class="role-label">第六课：故事板</span>
+    </div>
+    <div class="boundary-note" style="margin-top:20px;">
+      <strong>核心理念：</strong>每张卡片定义了一个"AI员工"角色及其提示词模板。不同课程之间有严格的边界控制 —— 前期的卡不允许越界生成后期内容（如角色图、分镜、视频提示词），确保制作流程逐步推进、不跑偏。<br>
+      <strong>使用方法：</strong>点击左侧导航跳转到对应卡片 → 阅读完整提示词 → 复制提示词到 AI 工具中使用 → 将 AI 输出粘贴回对应检查卡片进行质量把控。
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- LESSON 1 -->
+<!-- ================================================================ -->
+
+<section id="l1c1" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l1">第一课</span>
+    <h2>卡1：剧本分析员工</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"剧本分析员工"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">剧本分析员工</span> 剧本导演初读 & 制作信息提取</h3>
+    <p class="card-desc">从 AIGC 导演前期制作的角度，提取后续影视生成需要的信息。</p>
+
+    <div class="boundary-note"><strong>重要边界：</strong>不要写影评。不要写文学赏析。不要夸剧本。不要生成角色图提示词。不要生成场景图提示词。不要生成分镜。不要生成视频提示词。不要展开具体工具操作。本次任务只做"导演初读"和"制作信息提取"。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"剧本分析员工"。
+
+请阅读下面的短片剧本，并从 AIGC 导演前期制作的角度，提取后续影视生成需要的信息。
+
+注意：
+不要写影评。
+不要写文学赏析。
+不要夸剧本。
+不要生成角色图提示词。
+不要生成场景图提示词。
+不要生成分镜。
+不要生成视频提示词。
+不要展开具体工具操作。
+
+本次任务只做"导演初读"和"制作信息提取"。
+
+请按以下结构输出：
+
+1. 剧本类型倾向
+2. 故事情境
+3. 主要人物清单
+4. 每个人物的剧情功能
+5. 人物关系
+6. 核心冲突
+7. 主要场景
+8. 关键道具
+9. 每个关键道具的叙事作用
+10. 关键画面信息
+11. 关键声音信息
+12. 后续可能需要哪些制作环节或 AI 员工参与
+（只列制作环节名称和一句话用途，不展开具体工具操作，不生成任何提示词）
+13. 当前剧本中仍然不明确、需要导演继续判断的问题
+
+要求：
+不要提前写角色生成提示词、场景生成提示词、分镜或视频提示词。
+不要把本次任务扩展成完整制作方案。
+
+剧本如下：
+【在这里粘贴《可信度 97%》完整剧本】</div>
+    </div>
+  </div>
+</section>
+
+<section id="l1c2" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l1">第一课</span>
+    <h2>卡2：导演助理（初读检查）</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"导演助理"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">导演助理</span> 检查剧本初读结果是否合格</h3>
+    <p class="card-desc">判断初读结果是否能进入 AIGC 影视制作流程，以表格形式输出检查结果。</p>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"导演助理"。
+
+请检查下面这份剧本初读结果，判断它是否能进入 AIGC 影视制作流程。
+
+请重点检查：
+
+1. 是否只是在复述剧情？
+2. 是否写清了剧本类型倾向？
+3. 是否写清了主要人物的剧情功能？
+4. 是否写清了 AI 防诈助手作为"无形角色"的作用？
+5. 是否写清了核心冲突？
+6. 是否提取了主要场景？
+7. 是否提取了关键道具？
+8. 是否说明了关键道具的叙事作用？
+9. 是否指出了关键画面信息？
+10. 是否指出了关键声音信息？
+11. 是否说明后续可能需要哪些制作环节或 AI 员工？
+12. 是否提前越界生成了角色图、场景图、分镜、视频提示词或具体工具操作？
+
+请用以下表格输出：
+| 检查项 | 是否合格 | 存在问题 | 修改建议 |
+
+待检查内容如下：
+【粘贴 AI 第一次输出的剧本初读结果】</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- LESSON 2 -->
+<!-- ================================================================ -->
+
+<section id="l2c1" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l2">第二课</span>
+    <h2>卡1：影片风格判断助理</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"影片风格判断助理"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">影片风格判断助理</span> 类型、主题、情绪和风格母规则判断</h3>
+    <p class="card-desc">参考第一课《剧本导演初读表》和剧本《可信度 97%》，完成第二课的类型、主题、情绪和风格母规则判断。</p>
+
+    <div class="boundary-note"><strong>重要边界：</strong>不要改写剧情。不要扩写剧情。不要生成角色图提示词。不要生成场景图提示词。不要生成分镜。不要拆 ≤15 秒片段。不要写视频生成提示词。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"影片风格判断助理"。
+
+请参考第一课《剧本导演初读表》和剧本《可信度 97%》，帮助我完成第二课的类型、主题、情绪和风格母规则判断。
+
+重要边界：
+不要改写剧情。
+不要扩写剧情。
+不要生成角色图提示词。
+不要生成场景图提示词。
+不要生成分镜。
+不要拆 ≤15 秒片段。
+不要写视频生成提示词。
+
+请按以下结构输出：
+
+1. 本片可能被误判成哪些类型；
+2. 每种类型会把拍摄重点带向哪里；
+3. 本片最适合的类型方向；
+4. 本片不适合过度拍成什么；
+5. 本片主题不应被简化成什么；
+6. 本片更准确的主题表达；
+7. 情绪基调；
+8. 视觉风格规则；
+9. 声音基调；
+10. 后续 ≤15 秒片段统一约束；
+11. 后续生成时必须避免的跑偏方向。
+
+待分析内容如下：
+【粘贴第一课《剧本导演初读表》】
+【粘贴剧本《可信度 97%》】</div>
+    </div>
+  </div>
+</section>
+
+<section id="l2c2" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l2">第二课</span>
+    <h2>卡2：风格跑偏检查员工</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"风格跑偏检查员工"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">风格跑偏检查员工</span> 检查风格判断是否适合第二课使用</h3>
+    <p class="card-desc">第二课只允许做类型判断、主题判断、情绪基调、视觉风格规则、声音基调、片段统一约束。</p>
+
+    <div class="boundary-note"><strong>第二课不允许做：</strong>改写剧情、生成角色图提示词、生成场景图提示词、生成分镜、正式拆≤15秒片段、写镜号、写画面、写运镜、写视频生成提示词。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"风格跑偏检查员工"。
+
+请检查下面这份风格判断是否适合《可信度 97%》第二课使用。
+
+第二课只允许做：
+类型判断；
+主题判断；
+情绪基调判断；
+视觉风格规则；
+声音基调；
+后续 ≤15 秒片段统一约束。
+
+第二课不允许做：
+改写剧情；
+生成角色图提示词；
+生成场景图提示词；
+生成分镜；
+正式拆 ≤15 秒片段；
+写镜号；
+写画面；
+写运镜；
+写视频生成提示词。
+
+请重点检查：
+
+1. 是否鬼片化；
+2. 是否玄幻化；
+3. 是否过度赛博朋克化；
+4. 是否广告片化；
+5. 是否反诈宣传片化；
+6. 是否反 AI 口号化；
+7. 是否忽略普通公寓夜晚的现实感；
+8. 是否给出了可用于后续片段统一的规则；
+9. 是否提前进入分镜或视频提示词。
+
+请用表格输出：
+| 检查项 | 是否合格 | 问题说明 | 修改建议 |
+
+待检查内容如下：
+【粘贴 AI 输出内容】</div>
+    </div>
+  </div>
+</section>
+
+<section id="l2c3" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l2">第二课</span>
+    <h2>卡3：≤15秒片段统一约束整理员工</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"片段统一约束整理员工"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">片段统一约束整理</span> 整理每个≤15秒片段必须遵守的统一约束</h3>
+    <p class="card-desc">根据第二课已确定的类型方向、主题表达、情绪基调、视觉风格和声音基调，整理后续每个≤15秒片段必须遵守的统一约束。</p>
+
+    <div class="boundary-note"><strong>重要边界：</strong>本次不是正式拆片段。不要判断片段起止点。不要判断片段时长。不要写镜号。不要写画面。不要写运镜。不要写视频生成提示词。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"片段统一约束整理员工"。
+
+请根据第二课已经确定的类型方向、主题表达、情绪基调、视觉风格和声音基调，整理后续每个 ≤15 秒片段必须遵守的统一约束。
+
+注意：
+本次不是正式拆片段。
+不要判断片段起止点。
+不要判断片段时长。
+不要写镜号。
+不要写画面。
+不要写运镜。
+不要写视频生成提示词。
+
+请按以下表格输出：
+| 统一约束项 | 后续每个 ≤15 秒片段必须遵守什么 | 如果不遵守会怎样跑偏 |
+
+待整理内容如下：
+【粘贴第二课《视觉风格规则卡》】</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- LESSON 3 -->
+<!-- ================================================================ -->
+
+<section id="l3c1" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l3">第三课</span>
+    <h2>卡1：悬疑节奏分析员工</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"悬疑节奏分析员工"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">悬疑节奏分析员工</span> 从AIGC导演前期制作角度分析悬疑节奏</h3>
+    <p class="card-desc">基于剧本或《剧本导演初读表》，分析短片《可信度 97%》的悬疑节奏。</p>
+
+    <div class="boundary-note"><strong>重要边界：</strong>不要写影评。不要写剧情梗概。不要生成角色图提示词。不要生成场景图提示词。不要生成分镜。不要正式拆分≤15秒片段。不要生成视频提示词。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的 "悬疑节奏分析员工"。
+
+请基于下面的剧本或《剧本导演初读表》，从 AIGC 导演前期制作角度，分析短片《可信度 97%》的悬疑节奏。
+
+注意:
+不要写影评。
+不要写剧情梗概。
+不要生成角色图提示词。
+不要生成场景图提示词。
+不要生成分镜。
+不要正式拆分 ≤15 秒片段。
+不要生成视频提示词。
+
+请按以下结构输出:
+
+1. 本片的悬疑核心是什么？
+2. 观众的紧张感从哪里开始？
+3. 主要压点有哪些？
+4. 主要误判点有哪些？
+5. 关键的信息释放点有哪些？
+6. 反转点在哪里？
+7. 每个关键剧情节点可能承担什么悬疑功能？
+8. 哪些内容可以为后续 ≤15 秒片段拆分提供依据？
+（注意：这里只写 "片段功能预判", 不要正式拆片段，不要写视频提示词）
+
+待分析内容如下:
+【粘贴剧本或《剧本导演初读表》】</div>
+    </div>
+  </div>
+</section>
+
+<section id="l3c2" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l3">第三课</span>
+    <h2>卡2：悬疑节奏输出检查</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"导演助理"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">导演助理</span> 检查悬疑节奏分析是否合格</h3>
+    <p class="card-desc">判断悬疑节奏分析是否适合进入 AIGC 影视制作流程。</p>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的 "导演助理"。
+
+请检查下面这份悬疑节奏分析是否适合进入 AIGC 影视制作流程。
+
+请重点检查:
+
+1. 是否只是在复述剧情？
+2. 是否说明了观众为什么紧张？
+3. 是否找出了压点？
+4. 是否找出了误判点？
+5. 是否找出了信息释放点？
+6. 是否找出了反转点？
+7. 是否说明了每个关键节点的悬疑功能？
+8. 是否为后续 ≤15 秒片段拆分提供了依据？
+9. 是否提前正式拆分镜或正式拆片段？
+10. 是否提前写了视频生成提示词？
+
+请用表格输出:
+| 检查项 | 是否合格 | 存在问题 | 修改建议 |
+
+待检查内容如下:
+【粘贴 AI 输出内容】</div>
+    </div>
+  </div>
+</section>
+
+<section id="l3c3" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l3">第三课</span>
+    <h2>卡3：≤15秒片段功能预判</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"片段功能预判员工"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">片段功能预判员工</span> 整理后续可控片段的功能预判</h3>
+    <p class="card-desc">基于悬疑节奏分析，整理后续可控片段的功能预判。本次不是正式拆分≤15秒片段。</p>
+
+    <div class="boundary-note"><strong>重要边界：</strong>本次不是正式拆分 ≤15 秒片段。不要写镜号。不要写具体时长。不要写视频生成提示词。不要写分镜画面。只判断未来片段可能承担什么悬疑功能。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的 "片段功能预判员工"。
+
+请基于下面的悬疑节奏分析，整理《可信度 97%》后续可控片段的功能预判。
+
+注意:
+本次不是正式拆分 ≤15 秒片段。
+不要写镜号。
+不要写具体时长。
+不要写视频生成提示词。
+不要写分镜画面。
+只判断未来片段可能承担什么悬疑功能。
+
+请按以下表格输出:
+| 剧情节点 | 未来片段可能承担的悬疑功能 | 后续片段生成时要避免什么跑偏？|
+
+要求:
+每一项都要服务 "都市现实悬疑 / 科技伦理悬疑" 的方向。
+不要鬼片化、玄幻化、广告片化、赛博朋克化、反 AI 口号化。
+
+待分析内容如下:
+【粘贴悬疑节奏分析结果】</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- LESSON 4 -->
+<!-- ================================================================ -->
+
+<section id="l4c1" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l4">第四课</span>
+    <h2>卡1：角色全身正视图定妆提示词</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"AIGC 影视角色全身正视图定妆提示词生成助手"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">全身正视图定妆</span> 生成角色全身正视图基准图提示词</h3>
+    <p class="card-desc">根据剧本信息、角色功能、影片风格、人物定位，以及已上传的角色面部基准参考图，生成可直接用于图片 AI 的提示词。</p>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"AIGC 影视角色全身正视图定妆提示词生成助手"。
+
+你的任务不是生成剧情截图，不是生成剧照，不是生成分镜，不是生成视频提示词，而是根据我提供的剧本信息、角色功能、影片风格、人物定位，以及已经上传的角色面部基准参考图，生成一条可直接用于图片 AI 的"角色全身正视图定妆提示词"。
+
+你的核心目标是：
+1. 帮我生成"角色全身正视图基准图"提示词，用于 AIGC 影视角色完整定妆与后续角色一致性锁定；
+2. 提示词必须优先服务"面部继承、身高比例、体型、站姿、服装、鞋子、配饰、整体妆造"的稳定生成；
+3. 不能跑成剧情画面、电影剧照、室内场景图、悬疑氛围图、人物动作镜头或带场景的角色截图；
+4. 输出必须更适合"图片 AI 执行"，而不是写成冗长角色分析文案；
+5. 提示词结构采用"角色判断 + 正向提示词 + 负向提示词 + 一体化可直接复制版本"。
+
+请严格遵守以下画面硬性要求：
+1. 画幅比例固定为 9:16；
+2. 分辨率固定为超清 4K；
+3. 背景固定为纯白色无缝背景；
+4. 构图固定为全身正视图，人物完整站立，鞋子完整露出；
+5. 站姿为标准自然站姿或轻微 A-pose，不做剧情动作；
+6. 必须严格继承上传的面部特写参考图中的脸型、骨相、五官、皮肤质感、年龄感、神态、发型、发际线与整体气质；
+7. 不出现手机、门、沙发、楼道、玄关、客厅等剧情场景或剧情道具；
+8. 不出现剧情动作、表演镜头、电影剧照构图；
+9. 重点锁定角色的身高比例、体型、站姿、完整服装、鞋子、配饰、布料材质、妆造风格和整体人物轮廓。
+
+请按以下格式输出：
+
+【角色判断】
+1. 角色功能：
+2. 观众感受：
+3. 全身定妆方向：
+
+【正向提示词】
+按"画面边界 → 角色定位 → 继承面部特写图 → 身高比例与体态 → 服装妆造 → 手部与露出部位 → 灯光与成像"的顺序，输出一段适合图片 AI 执行的正向提示词。
+
+【负向提示词】
+按"错误画面类型 → 错误场景 / 道具 → 错误构图 → 错误体态与站姿 → 错误服装方向 → 错误选角方向 → 错误画风 / 质感 / 成像问题"的顺序，输出一段负向提示词。
+
+【一体化可直接复制版本】
+把正向提示词和负向提示词整合成一段完整提示词。
+
+待分析内容如下：
+【粘贴《可信度 97%》剧本中该角色相关段落】
+【上传或粘贴已选面部特写参考图描述】
+【粘贴角色人物功能】
+【粘贴第二课《视觉风格规则卡》】
+【粘贴第三课中该角色承担的悬疑功能】
+
+指定角色：
+【填写角色名】</div>
+    </div>
+  </div>
+</section>
+
+<section id="l4c2" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l4">第四课</span>
+    <h2>卡2：角色面部特写定妆提示词</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"AIGC 影视选角与角色面部定妆提示词生成助手"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">面部特写定妆</span> 生成角色面部基准图提示词</h3>
+    <p class="card-desc">用于 AIGC 影视选角与后续角色一致性锁定，优先服务脸型、骨相、五官、皮肤纹理、毛孔、发丝、神态、年龄感的稳定生成。</p>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"AIGC 影视选角与角色面部定妆提示词生成助手"。
+
+你的任务不是生成剧情截图，不是生成剧照，不是生成分镜，不是生成视频提示词，而是根据我提供的剧本信息、角色功能、影片风格和人物定位，生成一条可直接用于图片 AI 的"角色面部特写定妆图提示词"。
+
+你的核心目标是：
+1. 帮我生成"角色面部基准图"提示词，用于 AIGC 影视选角与后续角色一致性锁定；
+2. 提示词必须优先服务"脸型、骨相、五官、皮肤纹理、毛孔、发丝、神态、年龄感"的稳定生成；
+3. 不能跑成剧情画面、电影剧照、室内低光图、悬疑氛围图、手机通话画面或带场景的镜头截图；
+4. 输出必须更适合"图片 AI 执行"，而不是写成冗长角色分析文案；
+5. 提示词结构采用"角色判断 + 正向提示词 + 负向提示词 + 一体化可直接复制版本"。
+
+请严格遵守以下画面硬性要求：
+1. 画幅比例固定为 1:1；
+2. 分辨率固定为超清 4K；
+3. 背景固定为纯白色无缝背景；
+4. 构图固定为正面头部特写或头肩特写，居中选角照构图；
+5. 不出现手机；
+6. 不出现客厅、玄关、楼道、门口等剧情场景；
+7. 不出现剧情动作；
+8. 不出现手机屏幕光、室内低光、电影剧照构图；
+9. 重点锁定角色的脸型、骨相、五官、皮肤真实质感、毛孔、细纹、发丝、神态和年龄感。
+
+请按以下格式输出：
+
+【角色判断】
+1. 角色功能：
+2. 观众感受：
+3. 选角方向：
+
+【正向提示词】
+按"画面边界 → 角色定位 → 面部与骨相 → 五官与神态 → 皮肤与发型 → 灯光与成像"的顺序，输出一段适合图片 AI 执行的正向提示词。
+
+【负向提示词】
+按"错误画面类型 → 错误场景 / 道具 → 错误构图 → 错误选角方向 → 错误表演状态 → 错误画风 / 质感 / 成像问题"的顺序，输出一段负向提示词。
+
+【一体化可直接复制版本】
+把正向提示词和负向提示词整合成一段完整提示词。
+
+待分析内容如下：
+【粘贴《可信度 97%》剧本中该角色相关段落】
+【粘贴第一课《剧本导演初读表》中该角色信息】
+【粘贴第二课《视觉风格规则卡》】
+【粘贴第三课《悬疑节奏分析卡》中该角色承担的功能】
+
+指定角色：
+【填写角色名】</div>
+    </div>
+  </div>
+</section>
+
+<section id="l4c3" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l4">第四课</span>
+    <h2>卡3：角色三视图定妆提示词</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"AIGC 影视角色三视图定妆提示词生成助手"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">三视图定妆</span> 生成角色真人形象三视图提示词</h3>
+    <p class="card-desc">用于 AIGC 影视角色多角度一致性锁定，必须继承面部特写图和全身正视图参考图中的所有特征。</p>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"AIGC 影视角色三视图定妆提示词生成助手"。
+
+你的任务不是生成剧情截图，不是生成剧照，不是生成分镜，不是生成视频提示词，而是根据我提供的剧本信息、角色功能、影片风格、人物定位，以及已经上传的面部特写参考图和全身正视图参考图，生成一条可直接用于图片 AI 的"角色真人形象三视图提示词"。
+
+你的核心目标是：
+1. 帮我生成"角色三视图基准图"提示词，用于 AIGC 影视角色多角度一致性锁定；
+2. 提示词必须优先服务"面部一致、发型一致、身高比例一致、体态一致、服装前后一致、鞋子配饰一致、材质一致"的稳定生成；
+3. 不能跑成剧情画面、电影剧照、海报图、分镜图、视频动作画面或带场景的角色展示图；
+4. 输出必须更适合"图片 AI 执行"，而不是写成冗长角色分析文案；
+5. 提示词结构采用"角色判断 + 正向提示词 + 负向提示词 + 一体化可直接复制版本"。
+
+请严格遵守以下画面硬性要求：
+1. 画幅比例固定为 16:9；
+2. 分辨率固定为超清 4K；
+3. 背景固定为纯白色无缝背景；
+4. 画面为角色设定图 / 三视图排版，不是剧情截图；
+5. 三视图必须包含正视图、侧视图、背面图；
+6. 全身三视图为标准 A-pose 站姿；
+7. 必须严格继承上传的面部特写参考图中的脸型、骨相、五官、皮肤质感、年龄感、发型、发际线与整体神态气质；
+8. 必须严格继承上传的全身正视图参考图中的身高比例、体态、服装、鞋子、配饰、站姿与整体角色妆造；
+9. 不出现手机、门、沙发、楼道、玄关、客厅等剧情场景或剧情道具；
+10. 不出现剧情动作、表演镜头、电影剧照构图；
+11. 重点锁定角色正面、侧面、背面的发型、服装结构、鞋子、配饰、布料层次和物理材质一致性。
+
+请按以下格式输出：
+
+【角色判断】
+1. 角色功能：
+2. 多角度一致性用途：
+3. 三视图锁定方向：
+
+【正向提示词】
+按"画面边界 → 角色定位 → 继承面部特写图 → 继承全身正视图 → 三视图排列 → 服装前后结构 → 发型侧面与背面 → 灯光与成像"的顺序，输出一段适合图片 AI 执行的正向提示词。
+
+【负向提示词】
+按"错误画面类型 → 错误布局方式 → 错误场景 / 道具 → 角色不一致 / 换脸 / 换发型 / 换服装 / 换鞋子 → 错误体态与视图方向 → 错误选角方向 → 错误画风 / 质感 / 成像问题"的顺序，输出一段负向提示词。
+
+【一体化可直接复制版本】
+把正向提示词和负向提示词整合成一段完整提示词。
+
+待分析内容如下：
+【粘贴《可信度 97%》剧本中该角色相关段落】
+【上传或粘贴已选面部特写参考图描述】
+【上传或粘贴已选全身正视图参考图描述】
+【粘贴角色人物功能】
+【粘贴第二课《视觉风格规则卡》】
+【粘贴第三课中该角色承担的悬疑功能】
+
+指定角色：
+【填写角色名】</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- LESSON 5 -->
+<!-- ================================================================ -->
+
+<section id="l5c1" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l5">第五课</span>
+    <h2>卡1：场景基准图提示词</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"AIGC 影视场景基准图提示词生成助手"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">场景基准图</span> 生成无人空场场景基准图提示词</h3>
+    <p class="card-desc">根据剧本场景内容，生成可直接用于图片 AI 的"无人空场场景基准图提示词"。不出现角色，不出现人物动作。</p>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"AIGC 影视场景基准图提示词生成助手"。
+
+你的任务不是生成剧情截图，不是生成分镜，不是生成视频提示词，而是根据我提供的剧本场景内容，生成可直接用于图片 AI 的"无人空场场景基准图提示词"。
+
+你的核心目标是：
+1. 根据剧本判断场景功能；
+2. 判断这个空间要承担什么情绪和悬疑作用；
+3. 把导演判断转化成图片 AI 能执行的空间描述；
+4. 生成无人空场，不出现角色，不出现人物动作；
+5. 锁定空间结构、门窗位置、走廊方向、家具关系、光源、材质、色调和氛围；
+6. 输出完整正向提示词和完整负向提示词，不能写"同上""使用通用负向词"。
+
+我会提供：
+【场景相关剧本内容】- 粘贴该场景相关剧情、台词、空间信息。
+【指定场景名称】- 填写需要生成的场景名称。
+【补充要求】- 如有固定画幅、空间结构、时间、光源、风格限制，可以补充。没有则留空。
+
+请按以下格式输出：
+
+【场景判断】
+1. 场景功能：
+2. 观众感受：
+3. 空间方向：
+4. 避免方向：
+
+【正向提示词】
+按"画面边界 → 场景名称 → 剧本功能 → 空间类型 → 空间结构 → 光源与时间 → 材质与生活痕迹 → 风格与氛围"的顺序，输出适合图片 AI 执行的场景基准图提示词。
+
+【负向提示词】
+重点排除：人物、角色、动作、剧情截图、电影剧照、分镜、镜头运动、视频提示词、对白、字幕、文字、LOGO、水印、鬼片化、血腥、灵异、赛博朋克、豪宅化、空间结构混乱、模糊、低清晰度、畸形空间。
+
+【一体化可复制版本】
+把正向提示词和负向提示词整合成一段完整提示词。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- LESSON 5 - CARD 2: 角色基准 -->
+<!-- ================================================================ -->
+
+<section id="l5c2" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l5">第五课</span>
+    <h2>卡2：角色基准提示词</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：你是我的"AIGC 影视角色基准生成提示词助手"</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">角色基准生成</span> 面部特写图 → 全身正视图 → 角色设定展示板</h3>
+    <p class="card-desc">严格按三阶段流程生成角色基准图提示词：第一步锁脸、第二步锁妆造、第三步锁一致性。</p>
+
+    <div class="boundary-note"><strong>核心流程：</strong>每条提示词必须包含完整正向和负向提示词，不能写"同上""使用通用负向词""见前文"。根据已有材料自动判断当前阶段——只有剧本→面部特写图；有面部特写图→全身正视图；两者都有→角色设定展示板。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你是我的"AIGC 影视角色基准生成提示词助手"。
+
+你的任务不是生成剧情截图，不是生成电影剧照，不是生成分镜，不是生成视频提示词，而是根据我提供的剧本内容、角色名和已有参考图，生成可直接用于图片 AI 的角色基准图提示词。
+
+请严格按照"面部特写图 → 全身正视图 → 角色设定展示板"的流程工作。
+
+第一步：面部特写图，用于锁脸。
+这一阶段可以根据剧本充分分析角色功能、观众感受、选角方向，并转化为脸型、骨相、五官、皮肤、神态、年龄感和头肩比例。
+
+第二步：全身正视图，用于锁妆造。
+这一阶段必须继承已选面部特写图，不重新换脸，不重新改变年龄感和气质。重点推导角色的身高比例、肩宽、肩线、体态、站姿、服装、鞋子、配饰和整体妆造。
+
+第三步：角色设定展示板，用于锁一致性。
+这一阶段不要重新塑造角色，不要重新大段分析人物心理，不要重新设计脸、服装和身体。它只负责把已确定的面部特写图和已确定的全身正视图整合成一张角色设定展示板。
+
+每条提示词都必须包含完整正向提示词和完整负向提示词，不能写"同上""使用通用负向词""见前文"。
+
+请先判断当前阶段：
+1. 只有剧本内容和角色名：输出"面部特写图提示词"。
+2. 有剧本内容、角色名和已选面部特写图：输出"全身正视图提示词"。
+3. 有剧本内容、角色名、已选面部特写图和已选全身正视图：输出"角色设定展示板提示词"。
+4. 如果我明确要求"完整生成三步提示词"，则依次输出三条提示词。
+
+请按以下格式输出：
+
+【流程判断】
+说明当前处于哪一步，并用一句话说明原因。
+
+【角色判断】
+1. 角色功能：
+2. 观众感受：
+3. 选角方向：
+4. 避免方向：
+
+【正向提示词】
+根据当前阶段输出对应提示词。
+
+【负向提示词】
+根据当前阶段输出完整负向提示词。
+
+【一体化可复制版本】
+把正向提示词和负向提示词整合成一段完整提示词，可直接复制到图片 AI 中使用。
+
+---
+第一阶段：面部特写图提示词规则
+
+面部特写图必须包含：
+1:1 正方形画幅，超清 4K，纯白色无缝背景，正面头部特写 / 头肩特写，居中选角照构图。
+
+正向提示词重点写：
+角色名、年龄段、性别、剧本身份、人物功能、观众感受、选角方向；
+脸型、骨相、下颌线、颧骨、年龄感、成年感、头肩比例；
+眼睛、眉毛、鼻子、嘴巴、眼神情绪、微表情；
+皮肤纹理、毛孔、细纹、肤色不均、胡茬/瑕疵/疲惫痕迹、发型、发际线；
+中性棚拍光、平视正面拍摄、真实人物定妆摄影质感。
+
+负向提示词重点排除：
+剧情截图、电影剧照、分镜画面、手机、手机屏幕光、客厅、楼道、玄关、门口、道具、剧情动作；
+侧脸、全身图、角色设定展示板、多人构图；
+幼态脸、少年感、娃娃脸、头大脸、眼睛过大、自拍畸变、网红脸、明星脸、鬼片脸；
+夸张恐惧、哭泣、大喊、反派笑；
+二次元、Q版、卡通、欧美脸、过度美颜、磨皮、塑料皮肤、水光肌、文字、水印、LOGO、畸形问题。
+
+---
+第二阶段：全身正视图提示词规则
+
+全身正视图必须包含：
+9:16 竖版画幅，超清 4K，纯白色无缝背景，全身正视图，人物完整站立，头顶到脚底完整入画，鞋子完整露出。
+
+正向提示词重点写：
+已上传的面部特写图作为面部基准，严格继承其脸型、骨相、五官、皮肤质感、年龄感、发型、发际线和神态气质；
+成年人物正常比例，身体纵向比例舒展，头部大小与身体比例协调；
+肩宽适中，肩线自然平直，肩背自然展开，不缩肩，不塌肩，不驼背；
+体态、站姿、手部状态、服装、鞋子、配饰、布料材质、颜色、褶皱和整体妆造；
+正面平视视角，中性棚拍光，人物完整清晰，真人写实角色定妆图风格。
+
+普通城市男性角色：普通但不窝囊，疲惫但不松垮，克制但有责任感；中等偏清瘦但骨架正常，肩背自然展开，低调干净生活化穿搭；不要家居拖鞋感、睡衣感、廉价邋遢感。
+
+普通城市女性角色：真实生活化，自然普通但有角色功能；不要网红写真，不要偶像剧女主，不要鬼片受害者，不要过度摆拍。
+
+负向提示词重点排除：
+剧情截图、电影剧照、场景图、动作图、手机、客厅、楼道、门口、道具；
+重新换脸、换发型、换年龄感、换气质；
+半身图、侧身图、背面图、坐姿图、鞋子缺失、脚被裁切、头顶被裁切；
+矮小比例、五五身、头大身短、短腿、腿部过粗短、身体被压缩、童态比例；
+肩部过窄、缩肩、塌肩、驼背、脖子前伸、身体紧绷、畏缩感、窝囊感；
+错误服装方向、睡衣感、家居拖鞋、邋遢感、廉价感；
+二次元、Q版、卡通、欧美脸、过度美颜、磨皮、塑料皮肤、文字、水印、LOGO、畸形问题。
+
+---
+第三阶段：角色设定展示板提示词规则
+
+角色设定展示板必须包含：
+16:9 横版画幅，超清 4K，纯白色无缝背景，干净极简角色设定展示板版式。
+左侧为角色面部特写/头肩特写。
+右侧为同一角色全身三视图排列，包括正面、侧面、背面。
+
+这一阶段不要重新塑造角色，只写清楚继承关系和一致性。
+
+正向提示词重点写：
+左侧面部特写严格继承已上传的面部特写参考图，保持同一脸型、骨相、五官、皮肤质感、年龄感、发型、发际线和神态气质；
+右侧全身正面、侧面、背面严格继承已上传的全身正视图参考图，保持同一身高比例、体态、肩宽、肩线、服装、鞋子、配饰、站姿和整体妆造；
+右侧三视图为同一角色，人物等高、等比例、等间距排列，脚底在同一水平线上，头顶高度一致，三个人物完整站立，鞋子完整露出；
+正面、侧面、背面保持同一套服装、同一材质、同一颜色、同一鞋子、同一配饰、同一发型结构和同一身体比例；
+侧面视图展示真实侧面轮廓、肩颈、胸背厚度、腰背线条和腿部比例；
+背面视图展示后脑勺发型、背部服装结构、裤装结构和鞋子背面；
+中性棚拍光，柔和均匀打光，平视正交视角，画面干净、清晰、真实。
+
+负向提示词重点排除：
+剧情截图、电影剧照、分镜图、海报图、动作画面；
+普通三视图缺少左侧面部特写；
+错误排版、九宫格、多人设定表、漫画设定表、文字标签、说明文字、LOGO、水印；
+场景背景、客厅、楼道、玄关、门口、手机、沙发、道具；
+左侧面部特写与右侧三视图不是同一人；
+换脸、换发型、换服装、换鞋子、换年龄感、换气质；
+正面、侧面、背面变成不同人物；
+背面服装错误、鞋子结构错误、配饰数量变化、侧面方向错误、背面缺失；
+脚底不齐、人物高度不一致、比例漂移、五五身、头大身短、短腿、肩窄、塌肩、缩肩、驼背、身体被压缩；
+错误选角方向、邋遢感、廉价感、过度美颜、磨皮、塑料皮肤、文字、水印、LOGO、畸形问题。
+
+---
+待分析内容如下：
+【粘贴角色相关剧本内容】
+【指定角色名】
+【已选面部特写图 / 面部特写图描述（没有则留空）】
+【已选全身正视图 / 全身正视图描述（没有则留空）】
+【补充要求（没有则留空）】</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- 分镜 · 专业分镜表 -->
+<!-- ================================================================ -->
+
+<section id="sb1" class="section">
+  <div class="section-header">
+    <span class="lesson-badge" style="background:#8B4513;">分镜</span>
+    <h2>卡1：AI分镜表生成</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：资深影视导演兼分镜师</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">AI分镜表</span> 希区柯克式悬疑风 · 专业分镜设计</h3>
+    <p class="card-desc">将剧本转化为可实际拍摄/AI视频生成的专业分镜表，具备导演逻辑、剪辑逻辑、空间连续性和镜头流畅性。</p>
+
+    <div class="boundary-note"><strong>核心理念：</strong>不是简单复述剧本，而是把剧本转化为可执行的镜头设计。希区柯克式悬疑不是恐怖片——通过信息差、视线引导、主观镜头、人物反应、细节特写、声音悬念、日常空间中的异常感制造持续紧张感。</div>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">你现在是一名资深影视导演兼分镜师，请根据我提供的剧本片段，生成一份专业分镜表。
+
+你的任务不是简单复述剧本，而是要把剧本转化为可以实际拍摄 / AI 视频生成的镜头设计。
+输出内容必须具备导演逻辑、剪辑逻辑、空间连续性、镜头流畅性和 AI 生成可执行性。
+
+【剧本内容】
+此处放剧本片段
+
+【整体风格】
+剧本风格采用"希区柯克式悬疑风"。
+
+注意：
+不是恐怖片，不是血腥惊吓，不是鬼怪惊悚，不是依靠突然出现的人影、突然巨响、突然闪现画面来吓观众。
+核心是通过信息差、视线引导、主观镜头、人物反应、细节特写、声音悬念、日常空间中的异常感，制造持续紧张感。
+
+希区柯克式悬疑重点包括：
+1. 观众知道的信息略多于角色，形成信息差。
+2. 危险隐藏在普通生活场景里，而不是直接恐怖化。
+3. 通过门缝、镜面、窗户、阴影、背后空间、前景遮挡制造不安。
+4. 多使用人物反应镜头，例如迟疑、屏息、停顿、回头、眼神移动。
+5. 多使用物件特写，例如手机、门把手、脚步声来源、时钟、监控画面、桌面小物等。
+6. 声音可以先于画面出现，用未知声源制造悬念。
+7. 避免过度解释，让悬念通过画面、声音和剪辑节奏呈现。
+8. 悬疑感必须逐步累积，不能一开始就把情绪推到最高。
+
+【生成前逻辑判断】
+在正式生成分镜表之前，请先完成以下判断，并在输出中简要呈现：
+
+1. 推荐镜头数量
+   根据剧本长度、剧情节点、人物动作、悬疑信息点和情绪递进判断。不要为了凑数量强行拆镜。不要把多个关键动作塞进同一个镜头。每个镜头必须承担一个明确任务。
+
+2. 预计总时长
+   如果剧本没有明确总时长，请根据剧情内容自行估算。普通悬疑节奏下，单镜头建议 2—6 秒。重要反应、等待、凝视、压迫性空镜可以适当延长。视线切换、细节插入、动作过渡镜头可以较短。镜头时长必须服务动作完成和情绪递进，不要机械平均分配。
+
+3. 拆分逻辑
+   说明这段剧本是按照哪些剧情节点拆镜。拆分应遵循"空间建立 → 异常出现 → 角色察觉 → 细节确认 → 情绪升级 → 悬念推进"的基本逻辑。如果剧本本身不完整，也要根据已有内容建立合理的镜头链条。
+
+4. 悬疑节奏设计
+   说明本段悬疑是如何逐步升级的。重点说明信息差、视线引导、声音悬念、空间压迫感如何被安排到镜头中。
+
+5. 镜头流畅性设计
+   说明镜头之间如何衔接。必须考虑动作承接、视线承接、声音承接、景别承接和情绪承接。不允许每个镜头孤立存在。每个镜头都要自然引出下一个镜头。
+
+【镜头设计核心规则】
+
+1. 每个镜头只能有一个核心任务
+   "本镜头唯一任务"必须简洁、明确。不要把多个任务并列塞入同一镜头。
+   正确示例：建立夜晚客厅的普通生活空间。
+   正确示例：让观众第一次注意到门外异常声源。
+   错误示例：交代环境、人物状态、门外异常、主角恐惧并推进剧情。
+
+2. 镜头之间必须形成连续链条
+   每个镜头都必须和前后镜头存在明确衔接关系，不能像孤立画面拼贴。
+   常用衔接方式：动作承接、视线承接、声音承接、景别承接、情绪承接、空间承接。
+   禁止：上一镜头人物坐着下一镜头无过渡突然站到远处、无道具突然拿着关键道具、无理由跨轴导致观众迷失。
+
+3. 景别切换必须符合剪辑逻辑
+   景别层级：远景 → 全景 → 中全景 → 中景 → 中近景 → 近景 → 特写 → 大特写
+   相邻镜头应使用同级、邻级或合理过渡镜头衔接。禁止无理由大跨度跳切。
+   如确实需要大跨度跳切，必须在"连续性与 AI 限制"中说明原因。
+
+4. 空间方向必须连续
+   同一场景内保持人物站位、视线方向、运动方向、道具位置一致。避免无理由跨轴。门、窗、桌子、沙发、走廊、床、手机等关键空间元素必须保持前后一致。
+
+5. 动作必须连续
+   上一镜头的动作结果必须能自然接到下一镜头。不允许角色动作无理由跳跃。不允许关键动作缺少开始、过程或结果。
+
+6. 情绪必须递进
+   悬疑情绪应逐步升级：平静 → 轻微异常 → 怀疑 → 紧张 → 确认异常 → 压迫升级。人物表情要符合当前信息量，不能提前知道后面才出现的信息。
+
+7. 画面内容必须可视化
+   不要写抽象心理词。不要只写"气氛诡异""他感到危险""她很害怕"。应改为可拍摄画面。
+   例如：他停住手指，眼睛缓慢看向门口，呼吸变轻，客厅灯光在他脸上形成一半明一半暗的阴影。
+
+8. 声音/文字必须服务悬疑
+   可以写环境声、脚步声、门外低语、手机震动、时钟声、呼吸声、风声、远处电梯声等。声音可以先于画面出现。画面内文字只保留剧情必要信息。不添加无关字幕、花字、LOGO、水印。
+
+9. AI 生成限制必须明确
+   每个镜头的"连续性与 AI 限制"需写清楚：人物服装是否一致、人物位置是否延续、关键道具位置是否锁定、视线方向是否保持、是否禁止换脸换衣服换场景、是否禁止新增无关人物、是否禁止鬼怪化血腥化、是否禁止字幕水印乱码文字。
+
+【输出格式】
+
+一、镜头数量判断
+* 推荐镜头数量：
+* 预计总时长：
+* 拆分逻辑：
+* 悬疑节奏设计：
+* 镜头流畅性设计：
+
+二、分镜表
+
+| 镜号 | 时长 | 景别 | 机位/运动 | 本镜头唯一任务 | 画面内容 | 声音/文字 | 连续性与 AI 限制 |
+| -- | -: | -- | ------- | ------- | ---- | ------- | ---------- |
+
+【分镜表填写要求】
+
+1. 镜号：使用 01、02、03 格式，顺序必须符合剧情发生顺序。
+2. 时长：以秒为单位（如 3s、4s、5s），符合动作完成所需时间，不机械平均分配。
+3. 景别：从远景/全景/中全景/中景/中近景/近景/特写/大特写中选择，切换符合剪辑逻辑。
+4. 机位/运动：明确机位方向和镜头运动，运动必须服务悬疑，和人物动作方向一致。
+5. 本镜头唯一任务：只写一个核心任务，服务剧情推进/悬疑累积/人物反应/空间交代。
+6. 画面内容：可拍摄可生成的视觉描述，保持画面逻辑清楚，不写小说化心理描写。
+7. 声音/文字：本镜头中的声音/对白/画外音，声音设计尽量和前后镜头形成承接。
+8. 连续性与 AI 限制：本镜头与前后镜头的衔接关系，AI 生成时需避免的问题。
+
+【输出前自检】
+在最终输出前自行检查（不输出检查过程）：镜头数量是否合理、每个镜头是否只有一个任务、镜头间是否有承接、景别切换是否合理、人物站位视线方向是否连续、道具位置是否一致、角色动作是否跳跃、情绪递进是否符合信息量、希区柯克悬疑风是否通过镜头语言体现、表格内容是否可拍摄可执行、是否避免了字幕水印鬼怪化等问题。
+
+【输出风格要求】
+使用专业导演和分镜师语言。表格内容清晰、具体、可执行。不写小说、不写影评、不泛泛描述氛围。不解释思考过程。最终只输出"镜头数量判断"和"分镜表"。所有镜头服务剧情推进/悬疑累积/人物情绪递进。所有镜头之间必须具备连续性，不允许孤立画面拼贴感。
+
+---
+待分析内容如下：
+【粘贴剧本片段】</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- LESSON 6 -->
+<!-- ================================================================ -->
+
+<section id="l6c1" class="section">
+  <div class="section-header">
+    <span class="lesson-badge l6">第六课</span>
+    <h2>卡1：AI视频故事板</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">角色定位：AI视频故事板生成</p>
+  </div>
+  <div class="card">
+    <h3><span class="role-label">AI视频故事板</span> 手绘线稿风格 · 6到8格分镜图</h3>
+    <p class="card-desc">根据人物身份板和剧情，生成一张 AI 视频故事板。手绘线稿风格，6到8格分镜图。</p>
+
+    <h4 class="collapsible open" onclick="toggleCollapse(this)" style="margin-top:16px; color:var(--accent); font-size:15px;">📝 完整提示词原文（点击折叠）</h4>
+    <div class="collapse-content open">
+    <div class="prompt-content">请根据以上人物身份板和剧情，生成一张AI视频故事板，需要手绘线稿风格。
+
+故事板要求：
+- 6到8格分镜图
+- 手绘线稿风格（不要做成精修海报）
+- 每一格都要清楚表现：人物位置、景别、动作、镜头运动和画面重点
+- 画面使用清晰的分镜图风格
+- 每一格下方添加简短中文说明，包含：景别、人物动作和镜头运动
+- 可以用箭头标注：人物运动、镜头运动和环境运动</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- DOWNLOADS SECTION -->
+<!-- ================================================================ -->
+
+<section id="downloads" class="section">
+  <div class="section-header">
+    <span class="lesson-badge dl">资料</span>
+    <h2>资料下载</h2>
+    <p style="color:var(--text-secondary); margin-top:4px;">课程 PPT 文件 & 参考图片，点击即可下载</p>
+  </div>
+
+  <div class="card">
+    <h3>📊 课程 PPT 文件</h3>
+    <p class="card-desc">AIGC影视制作实战营课程PPT，包含完整课程内容。</p>
+    <div class="download-grid">
+      <a href="ppt/AIGC第一天课程PPT.pptx" download class="download-card ppt">
+        <div class="icon">📑</div>
+        <div class="info">
+          <div class="name">AIGC第一天课程PPT</div>
+          <div class="size">9.7 MB</div>
+        </div>
+        <span class="dl-btn">下载</span>
+      </a>
+      <a href="ppt/AIGC影视制作实战营第三天 (2).pptx" download class="download-card ppt">
+        <div class="icon">📑</div>
+        <div class="info">
+          <div class="name">AIGC影视制作实战营 第三天</div>
+          <div class="size">6.1 MB</div>
+        </div>
+        <span class="dl-btn">下载</span>
+      </a>
+      <a href="ppt/AIGC影视制作实战营第五天 .pptx" download class="download-card ppt">
+        <div class="icon">📑</div>
+        <div class="info">
+          <div class="name">AIGC影视制作实战营 第五天</div>
+          <div class="size">5.8 MB</div>
+        </div>
+        <span class="dl-btn">下载</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h3>🖼️ 参考图片</h3>
+    <p class="card-desc">课程相关参考图片，点击图片可查看大图并下载。</p>
+    <div class="img-preview-grid">
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133907.png" download>
+          <img src="img/微信图片_20260611133907.png" alt="参考图1" loading="lazy">
+          <div class="img-name">参考图 1</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133917.png" download>
+          <img src="img/微信图片_20260611133917.png" alt="参考图2" loading="lazy">
+          <div class="img-name">参考图 2</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133919.png" download>
+          <img src="img/微信图片_20260611133919.png" alt="参考图3" loading="lazy">
+          <div class="img-name">参考图 3</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133921.png" download>
+          <img src="img/微信图片_20260611133921.png" alt="参考图4" loading="lazy">
+          <div class="img-name">参考图 4</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133923.png" download>
+          <img src="img/微信图片_20260611133923.png" alt="参考图5" loading="lazy">
+          <div class="img-name">参考图 5</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133925.png" download>
+          <img src="img/微信图片_20260611133925.png" alt="参考图6" loading="lazy">
+          <div class="img-name">参考图 6</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133927.png" download>
+          <img src="img/微信图片_20260611133927.png" alt="参考图7" loading="lazy">
+          <div class="img-name">参考图 7</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/微信图片_20260611133929.png" download>
+          <img src="img/微信图片_20260611133929.png" alt="参考图8" loading="lazy">
+          <div class="img-name">参考图 8</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h3>🤖 AIGC 生成参考图</h3>
+    <p class="card-desc">AIGC 相关生成参考图片，点击图片可查看大图并下载。</p>
+    <div class="img-preview-grid">
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135047_175_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135047_175_73.jpg" alt="AIGC参考图1" loading="lazy">
+          <div class="img-name">AIGC 参考图 1</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135048_176_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135048_176_73.jpg" alt="AIGC参考图2" loading="lazy">
+          <div class="img-name">AIGC 参考图 2</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135049_177_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135049_177_73.jpg" alt="AIGC参考图3" loading="lazy">
+          <div class="img-name">AIGC 参考图 3</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135050_178_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135050_178_73.jpg" alt="AIGC参考图4" loading="lazy">
+          <div class="img-name">AIGC 参考图 4</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135050_179_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135050_179_73.jpg" alt="AIGC参考图5" loading="lazy">
+          <div class="img-name">AIGC 参考图 5</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135051_180_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135051_180_73.jpg" alt="AIGC参考图6" loading="lazy">
+          <div class="img-name">AIGC 参考图 6</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135052_181_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135052_181_73.jpg" alt="AIGC参考图7" loading="lazy">
+          <div class="img-name">AIGC 参考图 7</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135053_182_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135053_182_73.jpg" alt="AIGC参考图8" loading="lazy">
+          <div class="img-name">AIGC 参考图 8</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135054_183_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135054_183_73.jpg" alt="AIGC参考图9" loading="lazy">
+          <div class="img-name">AIGC 参考图 9</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135054_184_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135054_184_73.jpg" alt="AIGC参考图10" loading="lazy">
+          <div class="img-name">AIGC 参考图 10</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135055_185_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135055_185_73.jpg" alt="AIGC参考图11" loading="lazy">
+          <div class="img-name">AIGC 参考图 11</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135056_186_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135056_186_73.jpg" alt="AIGC参考图12" loading="lazy">
+          <div class="img-name">AIGC 参考图 12</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135056_187_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135056_187_73.jpg" alt="AIGC参考图13" loading="lazy">
+          <div class="img-name">AIGC 参考图 13</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135057_188_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135057_188_73.jpg" alt="AIGC参考图14" loading="lazy">
+          <div class="img-name">AIGC 参考图 14</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135058_189_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135058_189_73.jpg" alt="AIGC参考图15" loading="lazy">
+          <div class="img-name">AIGC 参考图 15</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135059_190_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135059_190_73.jpg" alt="AIGC参考图16" loading="lazy">
+          <div class="img-name">AIGC 参考图 16</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135059_191_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135059_191_73.jpg" alt="AIGC参考图17" loading="lazy">
+          <div class="img-name">AIGC 参考图 17</div>
+        </a>
+      </div>
+      <div class="img-preview-card">
+        <a href="img/aigc/微信图片_20260611135100_192_73.jpg" download>
+          <img src="img/aigc/微信图片_20260611135100_192_73.jpg" alt="AIGC参考图18" loading="lazy">
+          <div class="img-name">AIGC 参考图 18</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// Highlight active nav link based on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.sidebar-nav a[href^="#"]');
+function updateActiveLink() {
+  let current = '';
+  sections.forEach(s => {
+    if (s.getBoundingClientRect().top < 200) current = s.getAttribute('id');
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', updateActiveLink, {passive:true});
+updateActiveLink();
+
+// Smooth scroll
+navLinks.forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+// Collapsible toggle
+function toggleCollapse(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
